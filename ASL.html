@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Aux Assist</title>
+  <link href="ASL.css" rel="stylesheet" type="text/css" />
+  <link href="components/nav.css" rel="stylesheet" type="text/css" />
+  <link href="components/scrollbar.css" rel="stylesheet" type="text/css"/>
+  <link href="components/footer.css" rel="stylesheet" type="text/css"/>
+  <link href="components/footer.js" rel="script" type="text/js"/>  <div class="nav">
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <div class="nav">
+    <div class="nav-header">
+        <a href="home.html"><img src="files/Aux-Assist-Logo.png" alt="Logo"></a>
+        <a href="home.html" class="nav-title">Aux Assist</a>
+    </div>
+    <div class="nav-btn">
+    <label for="nav-check">
+        <span></span>
+        <span></span>
+        <span></span>
+    </label>
+    </div>
+    <div class="nav-links">
+        <a href="learn-ASL.html">Learn ASL</a>
+        <a href="ASL.html">ASL</a>
+        <a href="about.html" >About</a>
+    </div>
+  </div>
+</head>
+<body>
+  <div class="container">
+    <video class="input_video"></video>
+    <canvas class="output_canvas" width="400px" height="400px"></canvas>
+  </div>
+  <div class="grid">
+      <form>
+        <button class="btn"><img src="files/a.png"></button>
+        <button class="btn"><img src="files/b.png"></button>
+        <button class="btn"><img src="files/c.png"></button>
+        <button class="btn typ"><img src="files/d.png"></button>
+        <button class="btn"><img src="files/e.png"></button>
+       <button class="btn"><img src="files/f.png"></button>
+       <button class="btn"><img src="files/g.png"></button>
+       <button class="btn"><img src="files/h.png"></button>
+       <button class="btn"><img src="files/i.png"></button>
+       <button class="btn"><img src="files/j.png"></button>
+       <button class="btn"><img src="files/k.png"></button>
+       <button class="btn"><img src="files/l.png"></button>
+       <button class="btn"><img src="files/m.png"></button>
+       <button class="btn"><img src="files/n.png"></button>
+       <button class="btn"><img src="files/o.png"></button>
+        <button class="btn"><img src="files/p.png"></button>
+       <button class="btn"><img src="files/q.png"></button>
+       <button class="btn"><img src="files/r.png"></button>
+       <button class="btn"><img src="files/s.png"></button>
+        <button class="btn"><img src="files/t.png"></button>
+        <button class="btn"><img src="files/u.png"></button>
+        <button class="btn"><img src="files/v.png"></button>
+       <button class="btn"><img src="files/w.png"></button>
+       <button class="btn"><img src="files/x.png"></button>
+       <button class="btn"><img src="files/y.png"></button>
+       <button class="btn"><img src="files/z.png"></button>
+       <button class="btn-submit" type="submit">Submit</button>
+     </form>
+        
+       
+      <div class="output"></div>
+    </div>
+    <div class="footer">
+      <div class="content flex">
+          <div class="footer-column">
+              <h4>Site Links</h4>
+              <ul>
+                  <li><a href="home.html">Home</a></li>
+                  <li><a href="ASL.html">ASL Detector</a></li>
+                  <li><a href="ASL-learn.html">Learn ASL Basics</a></li>
+              </ul>
+          </div>
+          <div class="footer-column">
+              <h4>More Resources</h4>
+              <ul>
+                  <li><a href="https://www.nad.org/" target="_blank">National Association of the Deaf</a></li>
+                  <li><a href="asha.org" target="_blank">ASHA</a></li>
+                  <li><a href="https://www.youtube.com/c/billvicars" target="_blank">Bill Vicars YouTube</a></li>
+              </ul>
+          </div>
+          <div class="footer-column">
+              <h4>Contact</h4>
+              <ul>
+                  <li><strong>PHONE: </strong><a href="#">911</a></li>
+                  <li><strong>EMAIL: </strong><a href="#">AuxAssist@gmail.com</a></li>
+              </ul>
+          </div>
+          <div class="footer-column" class="newsletter-signup">
+              <form class="form">
+                  <h5>Subscribe to our newsletter<h5>
+                  <p class="description">Subscribe to this weekly news letter so you don’t miss out on daily lessons for learning ASL</p>
+                  <div>
+                  <input placeholder="Enter your email" type="email" name="email">
+                  <button type="submit">Subscribe</button>
+                 
+                </form>  
+          </div>
+      </div>
+      
+</body>
+<script src="asl.js"></script>
+<script type="module">
+  const videoElement = document.getElementsByClassName('input_video')[0];
+  const canvasElement = document.getElementsByClassName('output_canvas')[0];
+  const canvasCtx = canvasElement.getContext('2d');
+  
+  function onResults(results) {
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(
+        results.image, 0, 0, canvasElement.width, canvasElement.height);
+    if (results.multiHandLandmarks) {
+      for (const landmarks of results.multiHandLandmarks) {
+        drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
+                       {color: '#00FF00', lineWidth: 5});
+        drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 2});
+      }
+    }
+    canvasCtx.restore();
+  }
+  
+  const hands = new Hands({locateFile: (file) => {
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+  }});
+  hands.setOptions({
+    maxNumHands: 2,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+  hands.onResults(onResults);
+  
+  const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await hands.send({image: videoElement});
+    },
+    width: 400,
+    height: 400
+  });
+  camera.start();
+  </script>
+</html>
